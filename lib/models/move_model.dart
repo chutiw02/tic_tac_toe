@@ -1,5 +1,7 @@
+import '../utils/player.dart';
+
 class MoveModel {
-  final String player;
+  final Player player;
   final int row;
   final int col;
   final int moveNumber;
@@ -13,7 +15,7 @@ class MoveModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'player': player,
+      'player': player.symbol,
       'row': row,
       'col': col,
       'moveNumber': moveNumber,
@@ -22,10 +24,21 @@ class MoveModel {
 
   factory MoveModel.fromMap(Map<String, dynamic> map) {
     return MoveModel(
-      player: map['player'],
-      row: map['row'],
-      col: map['col'],
-      moveNumber: map['moveNumber'],
+      player: _playerFromString(map['player'] as String),
+      row: map['row'] as int,
+      col: map['col'] as int,
+      moveNumber: map['moveNumber'] as int,
     );
+  }
+
+  static Player _playerFromString(String value) {
+    switch (value) {
+      case 'X':
+        return Player.x;
+      case 'O':
+        return Player.o;
+      default:
+        return Player.none;
+    }
   }
 }
