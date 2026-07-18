@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../models/game_model.dart';
+import 'replay_screen.dart';
 
 class HistoryScreen extends StatelessWidget {
   const HistoryScreen({super.key});
@@ -49,7 +50,12 @@ class HistoryScreen extends StatelessWidget {
                     "${game.createdAt.day}/${game.createdAt.month}/${game.createdAt.year}",
                   ),
                   onTap: () {
-                    // Replay (Step ถัดไป)
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ReplayScreen(game: game),
+                      ),
+                    );
                   },
                 ),
               );

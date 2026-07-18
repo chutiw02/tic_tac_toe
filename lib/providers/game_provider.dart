@@ -39,16 +39,19 @@ class GameProvider extends ChangeNotifier {
 
   bool get isGameOver => _gameResult != GameResult.playing;
 
-  Player get winner {
+  String get winnerName {
     switch (_gameResult) {
       case GameResult.xWin:
-        return Player.x;
+        return "X";
 
       case GameResult.oWin:
-        return Player.o;
+        return "O";
+
+      case GameResult.draw:
+        return "Draw";
 
       default:
-        return Player.none;
+        return "";
     }
   }
 
@@ -108,7 +111,7 @@ class GameProvider extends ChangeNotifier {
     _gameResult = WinnerChecker.check(_board);
 
     debugPrint("Result = $_gameResult");
-    debugPrint("Winner = ${winner.symbol}");
+    debugPrint("Winner = ${winnerName}");
 
     if (_gameResult == GameResult.playing) {
       _currentPlayer = _currentPlayer.opposite;
@@ -159,7 +162,7 @@ class GameProvider extends ChangeNotifier {
     try {
       final gameRef = await _firestore.collection('games').add({
         'boardSize': _boardSize,
-        'winner': winner.symbol,
+        'winner': winnerName,
         'totalMoves': _moves.length,
         'createdAt': Timestamp.now(),
       });
