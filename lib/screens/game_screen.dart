@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tic_tac_toe/services/ai_service.dart';
 import '../utils/game_result.dart';
 import '../providers/game_provider.dart';
 import '../widgets/board_widget.dart';
@@ -28,8 +29,24 @@ class GameScreen extends StatelessWidget {
               child: BoardWidget(
                 board: provider.board,
 
-                onCellTap: (row, col) {
-                  provider.makeMove(row, col);
+                onCellTap: (row, col) async {
+                  bool moved = provider.makeMove(row, col);
+
+                  if (!moved) {
+                    return;
+                  }
+                  // ถ้าเกมจบ ไม่ต้องให้ AI เล่น
+                  if (provider.isGameOver) {
+                    return;
+                  }
+
+                  await Future.delayed(const Duration(microseconds: 2000));
+
+                  final aiMove = AiService().getBestMove(provider.board);
+
+                  if (aiMove != null) {
+                    provider.makeAiMove(aiMove.$1, aiMove.$2);
+                  }
                 },
               ),
             ),

@@ -1,6 +1,1 @@
-enum GameResult {
-  playing,
-  draw,
-  xWin,
-  oWin,
-}
+enum GameResult { playing, xWin, oWin, draw }

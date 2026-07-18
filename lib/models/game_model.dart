@@ -1,35 +1,35 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class GameModel {
-  final String? id;
+  final String id;
   final int boardSize;
   final String winner;
-  final Timestamp createdAt;
+  final int totalMoves;
+  final DateTime createdAt;
 
   const GameModel({
-    this.id,
+    required this.id,
     required this.boardSize,
     required this.winner,
+    required this.totalMoves,
     required this.createdAt,
   });
 
-  Map<String, dynamic> toMap() {
-    return {
-      'boardSize': boardSize,
-      'winner': winner,
-      'createdAt': createdAt,
-    };
-  }
+  factory GameModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
+    final data = doc.data()!;
 
-  factory GameModel.fromMap(
-    Map<String, dynamic> map,
-    String id,
-  ) {
     return GameModel(
-      id: id,
-      boardSize: map['boardSize'],
-      winner: map['winner'],
-      createdAt: map['createdAt'],
+      id: doc.id,
+
+      boardSize: (data['boardSize'] as int?) ?? 3,
+
+      winner: (data['winner'] as String?) ?? 'Draw',
+
+      totalMoves: (data['totalMoves'] as int?) ?? 0,
+
+      createdAt: data['createdAt'] != null
+          ? (data['createdAt'] as Timestamp).toDate()
+          : DateTime.now(),
     );
   }
 }

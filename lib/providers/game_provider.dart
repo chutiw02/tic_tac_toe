@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/move_model.dart';
 import '../utils/player.dart';
 import '../utils/winner_checker.dart';
@@ -15,6 +16,10 @@ class GameProvider extends ChangeNotifier {
 
   final List<MoveModel> _moves = [];
 
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  bool _gameSaved = false;
+
   GameProvider() {
     initializeBoard();
   }
@@ -26,25 +31,25 @@ class GameProvider extends ChangeNotifier {
   int get boardSize => _boardSize;
 
   List<List<Player>> get board =>
-    _board.map((row) => List<Player>.from(row)).toList();
+      _board.map((row) => List<Player>.from(row)).toList();
 
   Player get currentPlayer => _currentPlayer;
 
   GameResult get gameResult => _gameResult;
 
-    bool get isGameOver => _gameResult != GameResult.playing;
+  bool get isGameOver => _gameResult != GameResult.playing;
 
-    Player get winner {
-      switch (_gameResult) {
-        case GameResult.xWin:
-          return Player.x;
+  Player get winner {
+    switch (_gameResult) {
+      case GameResult.xWin:
+        return Player.x;
 
-        case GameResult.oWin:
-          return Player.o;
+      case GameResult.oWin:
+        return Player.o;
 
-        default:
-          return Player.none;
-      }
+      default:
+        return Player.none;
+    }
   }
 
   List<MoveModel> get moves => List.unmodifiable(_moves);
@@ -58,7 +63,6 @@ class GameProvider extends ChangeNotifier {
       throw ArgumentError('Board size must be at least 3');
     }
     _boardSize = size;
-    
 
     _board = List.generate(
       size,
@@ -67,8 +71,8 @@ class GameProvider extends ChangeNotifier {
 
     _currentPlayer = Player.x;
     _gameResult = GameResult.playing;
-
     _moves.clear();
+    _gameSaved = false;
 
     notifyListeners();
   }
@@ -103,23 +107,75 @@ class GameProvider extends ChangeNotifier {
   void _updateGameState() {
     _gameResult = WinnerChecker.check(_board);
 
+    debugPrint("Result = $_gameResult");
+    debugPrint("Winner = ${winner.symbol}");
+
     if (_gameResult == GameResult.playing) {
       _currentPlayer = _currentPlayer.opposite;
+    } else {
+      debugPrint("CALL SAVE");
+
+      _saveGame().catchError((e) {
+        debugPrint(e.toString());
+      });
     }
   }
 
-  bool makeMove(int row, int col) {
+  void _executeMove(int row, int col) {
+    _placeMove(row, col);
 
+    _updateGameState();
+  }
+
+  bool makeMove(int row, int col) {
     if (!_isValidMove(row, col)) {
       return false;
     }
 
-    _placeMove(row, col);
-
-    _updateGameState();
+    _executeMove(row, col);
 
     notifyListeners();
 
     return true;
+  }
+
+  bool makeAiMove(int row, int col) {
+    if (!_isValidMove(row, col)) {
+      return false;
+    }
+
+    _executeMove(row, col);
+
+    notifyListeners();
+
+    return true;
+  }
+
+  Future<void> _saveGame() async {
+    debugPrint('===== SAVE GAME =====');
+
+    if (_gameSaved) return;
+
+    try {
+      final gameRef = await _firestore.collection('games').add({
+        'boardSize': _boardSize,
+        'winner': winner.symbol,
+        'totalMoves': _moves.length,
+        'createdAt': Timestamp.now(),
+      });
+
+      debugPrint('Game ID: ${gameRef.id}');
+
+      for (final move in _moves) {
+        await gameRef.collection('moves').add(move.toMap());
+      }
+
+      _gameSaved = true;
+
+      debugPrint('SAVE SUCCESS');
+    } catch (e, stackTrace) {
+      debugPrint('SAVE ERROR: $e');
+      debugPrintStack(stackTrace: stackTrace);
+    }
   }
 }
