@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "456674516341",
+    "project_id": "tic-tac-toe-game-3f42e",
+    "storage_bucket": "tic-tac-toe-game-3f42e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:456674516341:android:d9624435d3f0af154dc73c",
+        "android_client_info": {
+          "package_name": "com.example.tic_tac_toe"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKW6WkB9m3OaP4vZpaVQvOt94U7AGcemE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
