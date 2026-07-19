@@ -8,8 +8,8 @@ A Flutter Tic Tac Toe game with **Dynamic Board Sizes**, **AI Opponent**, **Game
 
 | Home                            | Game                            | History                            | Replay                            |
 | ------------------------------- | ------------------------------- | ---------------------------------- | --------------------------------- |
-| ![](screenshot\home_screen.png) | ![](screenshot\game_screen.png) | ![](screenshot\history_screen.png) | ![](screenshot\replay_screen.png) |
-| ![](screenshot\selectBoard.png) |
+| ![](screenshot/home_screen.png) | ![](screenshot/game_screen.png) | ![](screenshot/history_screen.png) | ![](screenshot/replay_screen.png) |
+| ![](screenshot/selectBoard.png) |
 
 ---
 
