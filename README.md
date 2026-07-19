@@ -16,9 +16,9 @@ A Flutter Tic Tac Toe game with **Dynamic Board Sizes**, **AI Opponent**, **Game
 # ✨ Features
 
 - ✅ Dynamic board size (3×3, 4×4, 5×5, NxN)
-- ✅ AI opponent
-- ✅ Minimax algorithm for 3×3 boards
-- ✅ Heuristic algorithm for larger boards
+- ✅ Smart AI opponent
+  - Minimax algorithm for 3×3 boards
+  - Heuristic algorithm for 4×4 and larger boards
 - ✅ Winner & Draw detection
 - ✅ Game history
 - ✅ Replay previous games
@@ -140,6 +140,4 @@ flutter run
 
 **Chutiphon Phuengkhum**
 
-Flutter Developer
-
-GitHub: https://github.com/chutiw02
+GitHub: <https://github.com/chutiw02>

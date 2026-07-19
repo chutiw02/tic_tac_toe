@@ -15,7 +15,7 @@ class FirestoreService {
     required String winner,
     required List<MoveModel> moves,
   }) async {
-    final gameRef = await _firestore.collection('game').add({
+    final gameRef = await _firestore.collection('games').add({
       'boardSize': boardSize,
       'winner': winner,
       'totalMoves': moves.length,

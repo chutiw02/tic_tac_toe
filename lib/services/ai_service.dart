@@ -36,24 +36,57 @@ class AiService {
   }
 
   (int row, int col)? _findBestHeuristicMove(List<List<Player>> board) {
-    int bestScore = -999999;
+    int size = board.length;
 
+    // 1. ถ้าชนะได้ ให้ลงทันที
+    for (int row = 0; row < size; row++) {
+      for (int col = 0; col < size; col++) {
+        if (board[row][col] != Player.none) continue;
+
+        board[row][col] = Player.o;
+
+        if (WinnerChecker.check(board) == GameResult.oWin) {
+          board[row][col] = Player.none;
+          return (row, col);
+        }
+
+        board[row][col] = Player.none;
+      }
+    }
+
+    // 2. ถ้า X กำลังจะชนะ ให้บล็อก
+    for (int row = 0; row < size; row++) {
+      for (int col = 0; col < size; col++) {
+        if (board[row][col] != Player.none) continue;
+
+        board[row][col] = Player.x;
+
+        if (WinnerChecker.check(board) == GameResult.xWin) {
+          board[row][col] = Player.none;
+          return (row, col);
+        }
+
+        board[row][col] = Player.none;
+      }
+    }
+
+    // 3. ประเมินคะแนนทุกช่อง
+    int bestScore = -999999;
     (int, int)? bestMove;
 
-    for (int row = 0; row < board.length; row++) {
-      for (int col = 0; col < board.length; col++) {
-        if (board[row][col] == Player.none) {
-          board[row][col] = Player.o;
+    for (int row = 0; row < size; row++) {
+      for (int col = 0; col < size; col++) {
+        if (board[row][col] != Player.none) continue;
 
-          int score = _evaluatePosition(board, row, col);
+        board[row][col] = Player.o;
 
-          board[row][col] = Player.none;
+        int score = _evaluatePosition(board, row, col);
 
-          if (score > bestScore) {
-            bestScore = score;
+        board[row][col] = Player.none;
 
-            bestMove = (row, col);
-          }
+        if (score > bestScore) {
+          bestScore = score;
+          bestMove = (row, col);
         }
       }
     }
@@ -121,16 +154,41 @@ class AiService {
 
   int _evaluatePosition(List<List<Player>> board, int row, int col) {
     int score = 0;
+    int size = board.length;
 
-    // AI ได้ช่อง
-    score += 10;
-
-    // กลางกระดานสำคัญ
-    int center = board.length ~/ 2;
-
-    if (row == center && col == center) {
-      score += 20;
+    // คะแนนจากแถว
+    for (int c = 0; c < size; c++) {
+      if (board[row][c] == Player.o) score += 8;
+      if (board[row][c] == Player.x) score += 4;
     }
+
+    // คะแนนจากคอลัมน์
+    for (int r = 0; r < size; r++) {
+      if (board[r][col] == Player.o) score += 8;
+      if (board[r][col] == Player.x) score += 4;
+    }
+
+    // แนวทแยงหลัก
+    if (row == col) {
+      for (int i = 0; i < size; i++) {
+        if (board[i][i] == Player.o) score += 8;
+        if (board[i][i] == Player.x) score += 4;
+      }
+    }
+
+    // แนวทแยงรอง
+    if (row + col == size - 1) {
+      for (int i = 0; i < size; i++) {
+        if (board[i][size - 1 - i] == Player.o) score += 8;
+        if (board[i][size - 1 - i] == Player.x) score += 4;
+      }
+    }
+
+    // โบนัสตรงกลาง
+    int center = size ~/ 2;
+
+    score += (size - (row - center).abs()) * 2;
+    score += (size - (col - center).abs()) * 2;
 
     return score;
   }
