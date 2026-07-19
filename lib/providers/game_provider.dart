@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../models/move_model.dart';
 import '../utils/player.dart';
 import '../utils/winner_checker.dart';
 import '../utils/game_result.dart';
+import '../services/firestore_service.dart';
 
 class GameProvider extends ChangeNotifier {
   int _boardSize = 3;
@@ -15,8 +16,6 @@ class GameProvider extends ChangeNotifier {
   GameResult _gameResult = GameResult.playing;
 
   final List<MoveModel> _moves = [];
-
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   bool _gameSaved = false;
 
@@ -111,7 +110,7 @@ class GameProvider extends ChangeNotifier {
     _gameResult = WinnerChecker.check(_board);
 
     debugPrint("Result = $_gameResult");
-    debugPrint("Winner = ${winnerName}");
+    debugPrint("Winner = $winnerName");
 
     if (_gameResult == GameResult.playing) {
       _currentPlayer = _currentPlayer.opposite;
@@ -155,30 +154,18 @@ class GameProvider extends ChangeNotifier {
   }
 
   Future<void> _saveGame() async {
-    debugPrint('===== SAVE GAME =====');
-
     if (_gameSaved) return;
 
     try {
-      final gameRef = await _firestore.collection('games').add({
-        'boardSize': _boardSize,
-        'winner': winnerName,
-        'totalMoves': _moves.length,
-        'createdAt': Timestamp.now(),
-      });
-
-      debugPrint('Game ID: ${gameRef.id}');
-
-      for (final move in _moves) {
-        await gameRef.collection('moves').add(move.toMap());
-      }
+      await FirestoreService.instance.saveGame(
+        boardSize: _boardSize,
+        winner: winnerName,
+        moves: _moves,
+      );
 
       _gameSaved = true;
-
-      debugPrint('SAVE SUCCESS');
-    } catch (e, stackTrace) {
-      debugPrint('SAVE ERROR: $e');
-      debugPrintStack(stackTrace: stackTrace);
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 }

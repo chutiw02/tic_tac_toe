@@ -8,11 +8,7 @@ class BoardWidget extends StatelessWidget {
 
   final void Function(int row, int col) onCellTap;
 
-  const BoardWidget({
-    super.key,
-    required this.board,
-    required this.onCellTap,
-  });
+  const BoardWidget({super.key, required this.board, required this.onCellTap});
 
   @override
   Widget build(BuildContext context) {

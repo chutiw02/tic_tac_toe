@@ -1,8 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
+import 'package:tic_tac_toe/services/firestore_service.dart';
 import '../models/game_model.dart';
 import 'replay_screen.dart';
+import 'package:intl/intl.dart';
 
 class HistoryScreen extends StatelessWidget {
   const HistoryScreen({super.key});
@@ -11,11 +11,8 @@ class HistoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Game History")),
-      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: FirebaseFirestore.instance
-            .collection('games')
-            .orderBy('createdAt', descending: true)
-            .snapshots(),
+      body: StreamBuilder<List<GameModel>>(
+        stream: FirestoreService.instance.getGames(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(child: Text(snapshot.error.toString()));
@@ -25,9 +22,7 @@ class HistoryScreen extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
 
-          final games = snapshot.data!.docs
-              .map(GameModel.fromFirestore)
-              .toList();
+          final games = snapshot.data ?? [];
 
           if (games.isEmpty) {
             return const Center(child: Text("No History"));
@@ -47,7 +42,7 @@ class HistoryScreen extends StatelessWidget {
                     "Winner : ${game.winner}\nMoves : ${game.totalMoves}",
                   ),
                   trailing: Text(
-                    "${game.createdAt.day}/${game.createdAt.month}/${game.createdAt.year}",
+                    DateFormat('dd/MM/yyyy HH:mm').format(game.createdAt),
                   ),
                   onTap: () {
                     Navigator.push(

@@ -119,18 +119,6 @@ class AiService {
     }
   }
 
-  (int, int)? _heuristicMove(List<List<Player>> board) {
-    for (int row = 0; row < board.length; row++) {
-      for (int col = 0; col < board.length; col++) {
-        if (board[row][col] == Player.none) {
-          return (row, col);
-        }
-      }
-    }
-
-    return null;
-  }
-
   int _evaluatePosition(List<List<Player>> board, int row, int col) {
     int score = 0;
 

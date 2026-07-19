@@ -1,10 +1,8 @@
 import 'dart:async';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
 import '../models/game_model.dart';
 import '../models/move_model.dart';
+import '../services/firestore_service.dart';
 import '../utils/player.dart';
 
 class ReplayScreen extends StatefulWidget {
@@ -42,14 +40,7 @@ class _ReplayScreenState extends State<ReplayScreen> {
   }
 
   Future<void> _loadMoves() async {
-    final snapshot = await FirebaseFirestore.instance
-        .collection('games')
-        .doc(widget.game.id)
-        .collection('moves')
-        .orderBy('moveNumber')
-        .get();
-
-    moves = snapshot.docs.map((doc) => MoveModel.fromMap(doc.data())).toList();
+    moves = await FirestoreService.instance.getMoves(widget.game.id);
 
     _startReplay();
   }

@@ -1,8 +1,4 @@
-enum Player {
-  x,
-  o,
-  none,
-}
+enum Player { x, o, none }
 
 extension PlayerExtension on Player {
   String get symbol {

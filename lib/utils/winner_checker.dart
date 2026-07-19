@@ -21,9 +21,7 @@ class WinnerChecker {
       }
 
       if (win) {
-        return first == Player.x
-            ? GameResult.xWin
-            : GameResult.oWin;
+        return first == Player.x ? GameResult.xWin : GameResult.oWin;
       }
     }
 
@@ -43,9 +41,7 @@ class WinnerChecker {
       }
 
       if (win) {
-        return first == Player.x
-            ? GameResult.xWin
-            : GameResult.oWin;
+        return first == Player.x ? GameResult.xWin : GameResult.oWin;
       }
     }
 
@@ -63,9 +59,7 @@ class WinnerChecker {
       }
 
       if (win) {
-        return diagonal == Player.x
-            ? GameResult.xWin
-            : GameResult.oWin;
+        return diagonal == Player.x ? GameResult.xWin : GameResult.oWin;
       }
     }
 
@@ -83,9 +77,7 @@ class WinnerChecker {
       }
 
       if (win) {
-        return anti == Player.x
-            ? GameResult.xWin
-            : GameResult.oWin;
+        return anti == Player.x ? GameResult.xWin : GameResult.oWin;
       }
     }
 
