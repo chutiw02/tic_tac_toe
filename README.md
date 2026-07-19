@@ -6,8 +6,6 @@ A Flutter Tic Tac Toe game with **Dynamic Board Sizes**, **AI Opponent**, **Game
 
 ## 📱 Screenshots
 
-> Add screenshots here
-
 | Home                            | Game                            | History                            | Replay                            |
 | ------------------------------- | ------------------------------- | ---------------------------------- | --------------------------------- |
 | ![](screenshot\home_screen.png) | ![](screenshot\game_screen.png) | ![](screenshot\history_screen.png) | ![](screenshot\replay_screen.png) |
